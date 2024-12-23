@@ -2,8 +2,8 @@ import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Tabs } from '@ark-ui/react';
 import { clsx } from 'clsx/lite';
-import parse from 'html-react-parser';
-import { evaluate } from 'mathjs';
+import parseHtml from 'html-react-parser';
+import { evaluate, chain } from 'mathjs';
 import katex from 'katex';
 
 type Tab = {
@@ -18,34 +18,79 @@ type Key = {
   btn?: ReactNode; // used for text in button
 };
 
-const ZERO_KEY: Key = { id: 'zero', value: '0', btn: '0' };
-
 const tabs: Tab[] = [
   {
     name: 'arithmetic',
     label: 'Арифм.',
     keys: [
       [
-        { id: 'seven', value: '7', btn: '7' },
-        { id: 'eight', value: '8', btn: '8' },
-        { id: 'nine', value: '9', btn: '9' },
-        { id: 'clear', btn: <span>C</span> },
+        {
+          id: 'seven',
+          value: '7',
+          btn: '7',
+        },
+        {
+          id: 'eight',
+          value: '8',
+          btn: '8',
+        },
+        {
+          id: 'nine',
+          value: '9',
+          btn: '9',
+        },
+        {
+          id: 'clear',
+          btn: <span>C</span>,
+        },
         {
           id: 'remove',
           btn: <span className="material-symbols-outlined">backspace</span>,
         },
       ],
       [
-        { id: 'four', value: '4', btn: '4' },
-        { id: 'five', value: '5', btn: '5' },
-        { id: 'six', value: '6', btn: '6' },
-        { id: 'plus', value: '+', btn: '+' },
-        { id: 'minus', value: '-', btn: '-' },
+        {
+          id: 'four',
+          value: '4',
+          btn: '4',
+        },
+        {
+          id: 'five',
+          value: '5',
+          btn: '5',
+        },
+        {
+          id: 'six',
+          value: '6',
+          btn: '6',
+        },
+        {
+          id: 'plus',
+          value: '+',
+          btn: '+',
+        },
+        {
+          id: 'minus',
+          value: '-',
+          btn: '-',
+        },
       ],
       [
-        { id: 'one', value: '1', btn: '1' },
-        { id: 'two', value: '2', btn: '2' },
-        { id: 'three', value: '3', btn: '3' },
+        {
+          id: 'one',
+          value: '1',
+          btn: '1',
+        },
+        {
+          id: 'two',
+          value: '2',
+          btn: '2',
+        },
+        {
+          id: 'three',
+          value: '3',
+          btn: '3',
+        },
         {
           id: 'multiply',
           value: '*',
@@ -63,7 +108,11 @@ const tabs: Tab[] = [
           value: '(',
           btn: '(',
         },
-        ZERO_KEY,
+        {
+          id: 'zero',
+          value: '0',
+          btn: '0',
+        },
         {
           id: 'bracket_right',
           value: ')',
@@ -79,7 +128,7 @@ const tabs: Tab[] = [
   },
   {
     name: 'trig',
-    label: 'Тріг. / Гіпербол.',
+    label: 'Триг. / Гіпербол.',
     keys: [
       [
         {
@@ -235,11 +284,44 @@ const tabs: Tab[] = [
     name: 'log',
     label: 'Ступ. / Лог.',
     keys: [
-      [{}, {}, {}, {}, {}],
+      [
+        {
+          id: 'x_n',
+          value: 'pow(x, n)',
+          btn: 'x^n',
+        },
+        {
+          id: 'square',
+          value: 'pow(x, 2)',
+          btn: 'x^2',
+        },
+        {
+          id: 'cube',
+          value: 'pow(x, 3)',
+          btn: 'x^3',
+        },
+        {
+          id: 'two_n',
+          value: 'pow(2, n)',
+          btn: '2^n',
+        },
+        {
+          id: 'ten_n',
+          value: 'pow(10, n)',
+          btn: '10^n',
+        },
+      ],
+      [
+        { id: 'root_n', value: 'nthRoot(', btn: '\\sqrt[n]{x}' },
+        { id: 'sqrt', value: 'sqrt(', btn: '\\sqrt{x}' },
+        { id: 'cbrt', value: 'cbrt(', btn: '\\sqrt[3]{x}' },
+        { value: '' },
+        { value: '' },
+      ],
       [
         {
           id: 'log',
-          value: `log(`,
+          value: `log(a, b)`,
           btn: '\\log_{x}',
         },
         {
@@ -263,7 +345,6 @@ const tabs: Tab[] = [
           btn: '\\exp',
         },
       ],
-      [],
       [],
     ],
   },
@@ -292,8 +373,6 @@ const tabs: Tab[] = [
 
 const tabsIndexes = new Array(tabs.length).fill(1).map((_, i) => i);
 
-const isOperator = (value: string) => ['+', '-', '*', '/'].includes(value);
-
 export const Engineer = () => {
   const tabRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -302,23 +381,15 @@ export const Engineer = () => {
   const [expression, setExpression] = useState<string>('0');
   const [result, setResult] = useState<string | object>('0');
 
+  useEffect(() => inputRef.current?.focus());
+
   useEffect(() => setTabWidth(tabRef.current?.clientWidth || 0), [tabRef]);
 
-  useEffect(() => {
-    const handleFocus = () => {
-      inputRef.current?.focus();
-    };
-
-    inputRef.current?.focus();
-
-    inputRef.current?.addEventListener('blur', handleFocus);
-
-    return () => {
-      inputRef.current?.removeEventListener('blur', handleFocus);
-    };
-  }, []);
-
   const onExpressionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= 0) {
+      setExpression('0');
+      return;
+    }
     if (e.target.value[0] == '0') {
       setExpression(e.target.value.slice(1));
     } else {
@@ -329,41 +400,30 @@ export const Engineer = () => {
   const onKeyClick = (key: Key) => {
     if (key.id == 'clear') {
       setExpression('0');
+    } else if (key.id == 'equal') {
+      if (typeof result == 'object') return;
+      setExpression(result);
     } else if (key.id == 'remove') {
-      if (expression.length == 0) return;
       if (expression.length - 1 == 0) {
         setExpression('0');
         return;
       }
       setExpression(exp => exp.slice(0, -1));
-    } else if (key.id == 'equal') {
-      setExpression('0');
     } else {
-      if (
-        expression[expression.length - 1] == '0' &&
-        expression.length == 1 &&
-        key.id != 'dot' &&
-        !isOperator(key.value?.[0] || '')
-      ) {
+      if (expression[expression.length - 1] == '0' && expression.length == 1) {
         setExpression(exp => exp.slice(0, 0));
       }
       setExpression(e => e + key.value);
     }
+    inputRef.current?.focus();
   };
 
   useEffect(() => {
-    if (isOperator(expression[expression.length - 1])) {
-      setResult('');
-      return;
-    }
-    if (expression[expression.length - 1] == '.') {
-      return;
-    }
-    if (expression.length == 0) {
+    if (expression.length <= 0) {
       setExpression('0');
     }
     try {
-      setResult(evaluate(expression).toString());
+      setResult(chain(evaluate(expression)).round(15).toString());
     } catch (error) {
       setResult(error as object);
     }
@@ -372,16 +432,16 @@ export const Engineer = () => {
   return (
     <div className="max-w-4xl h-[calc(100vh-64px)] mx-auto p-2 grid grid-rows-2">
       <div className="pr-8 flex flex-col items-end gap-8">
-        <div className="flex-1 flex flex-col justify-end text-5xl">
+        <div className="w-full flex-1 flex flex-col justify-end text-5xl">
           <input
             ref={inputRef}
             type="text"
             value={expression}
             onChange={onExpressionChange}
-            className="text-right bg-neutral-950 caret-blue-700 focus:outline-none"
+            className="w-full text-right bg-neutral-950 caret-blue-700 focus:outline-none"
           />
         </div>
-        <div className="flex-1 text-3xl select-none text-neutral-400">
+        <div className="flex-1 text-3xl text-neutral-400">
           {typeof result == 'string' ? result : 'Введіть коректний вираз'}
         </div>
       </div>
@@ -429,7 +489,7 @@ export const Engineer = () => {
                     className="flex items-center justify-center rounded transition-colors select-none bg-neutral-800 hover:bg-neutral-900"
                   >
                     {typeof key.btn == 'string'
-                      ? parse(katex.renderToString(key.btn))
+                      ? parseHtml(katex.renderToString(key.btn))
                       : key.btn}
                   </motion.button>
                 ))
