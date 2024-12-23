@@ -1,5 +1,5 @@
 export const Calculus = () => (
-  <div className="w-full h-[calc(100vh-64px)] flex items-center justify-center">
+  <div className="flex h-[calc(100vh-64px)] w-full items-center justify-center">
     Аналіз
   </div>
 );

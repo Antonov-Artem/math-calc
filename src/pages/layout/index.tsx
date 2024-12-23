@@ -29,9 +29,9 @@ export const Layout = ({ routes }: { routes: string[] }) => {
 
   return (
     <>
-      <header className="h-16 px-6 flex items-center gap-8 border-b-2 border-black">
+      <header className="flex h-16 items-center gap-8 border-b-2 border-black px-6">
         <Link to="/engineer">
-          <div className="flex items-center gap-3 select-none">
+          <div className="flex select-none items-center gap-3">
             <img src="/logo.svg" />
             <div className="text-sm font-bold">Uni Calc</div>
           </div>
@@ -43,7 +43,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
           onOpenChange={onOpenChange}
         >
           <Select.Control>
-            <Select.Trigger className="h-9 pl-4 pr-2 flex items-center gap-2 text-sm rounded-lg select-none bg-neutral-900">
+            <Select.Trigger className="flex h-9 select-none items-center gap-2 rounded-lg bg-neutral-900 pl-4 pr-2 text-sm">
               <Select.ValueText className="leading-none">
                 {routesLabels[value]}
               </Select.ValueText>
@@ -65,17 +65,17 @@ export const Layout = ({ routes }: { routes: string[] }) => {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="py-2 px-2 rounded-lg bg-neutral-900"
+                    className="rounded-lg bg-neutral-900 px-2 py-2"
                   >
                     <Select.ItemGroup className="flex flex-col gap-2">
-                      {routes.map(r => (
+                      {routes.map((r) => (
                         <Select.Item
                           key={r}
                           item={r}
-                          className="flex py-1 text-sm cursor-pointer rounded-lg select-none hover:bg-neutral-800 data-[state=checked]:bg-neutral-800 transition"
+                          className="flex cursor-pointer select-none rounded-lg py-1 text-sm transition hover:bg-neutral-800 data-[state=checked]:bg-neutral-800"
                         >
                           <Select.ItemIndicator className="w-1 rounded-full bg-blue-700" />
-                          <Select.ItemText className="py-1 px-4">
+                          <Select.ItemText className="px-4 py-1">
                             {routesLabels[r]}
                           </Select.ItemText>
                         </Select.Item>

@@ -16,7 +16,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": "./src",
+    "paths": {
+      "app/*": ["app/*"],
+      "pages/*": ["pages/*"],
+      "widgets/*": ["widgets/*"]
+    }
   },
   "include": ["src", "types/vite-env.d.ts"]
 }
