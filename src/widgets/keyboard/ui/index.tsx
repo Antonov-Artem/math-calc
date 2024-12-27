@@ -28,23 +28,31 @@ export const Keyboard = ({ value, onChange }: KeyboardProps) => {
       // setValue(result);
     } else if (key.id == 'remove') {
       if (value.length - 1 == 0) {
-        onChange('0');
-        return;
+        if (value[0] == '0') {
+          return;
+        } else {
+          onChange('0');
+        }
+      } else {
+        onChange(value.slice(0, -1));
       }
-      onChange(value.slice(0, -1));
     } else {
-      onChange(value + key.value);
+      if (value.length == 1 && value[0] == '0') {
+        onChange(key.value!);
+      } else {
+        onChange(value + key.value);
+      }
     }
   };
 
   return (
     <Tabs.Root
       defaultValue={tabsIndexes[0].toString()}
-      onValueChange={(d) => setTab(Number(d.value))}
+      onValueChange={d => setTab(Number(d.value))}
       className="grid grid-rows-[auto_1fr] gap-2"
     >
       <Tabs.List className="relative flex h-12 rounded-md bg-neutral-900">
-        {tabsIndexes.map((t) => (
+        {tabsIndexes.map(t => (
           <Tabs.Trigger
             ref={tabRef}
             key={tabs[t].name}
@@ -74,8 +82,8 @@ export const Keyboard = ({ value, onChange }: KeyboardProps) => {
               gridTemplateColumns: `repeat(${t.keys[0].length}, 1fr)`,
             }}
           >
-            {t.keys.map((row) =>
-              row.map((key) => (
+            {t.keys.map(row =>
+              row.map(key => (
                 <motion.button
                   key={key.id}
                   onTap={() => onKeyClick(key)}

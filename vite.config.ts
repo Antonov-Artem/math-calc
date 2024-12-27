@@ -9,6 +9,7 @@ export default defineConfig({
       app: resolve(__dirname, './src/app'),
       pages: resolve(__dirname, './src/pages'),
       widgets: resolve(__dirname, './src/widgets'),
+      shared: resolve(__dirname, './src/shared'),
     },
   },
 });

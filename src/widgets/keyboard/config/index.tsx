@@ -115,7 +115,7 @@ export const tabs: Tab[] = [
       [
         {
           id: 'pi',
-          value: Math.PI.toString(),
+          value: 'pi',
           btn: '\\pi',
         },
         {
@@ -318,7 +318,7 @@ export const tabs: Tab[] = [
         },
         {
           id: 'e',
-          value: Math.E.toString(),
+          value: 'e',
           btn: 'e',
         },
         {

@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { evaluate, chain } from 'mathjs';
+import { evaluate, chain, format } from 'mathjs';
 import { Keyboard } from 'widgets/keyboard';
+import { formatNumber } from 'shared/lib';
 
 export const Engineer = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -13,7 +14,7 @@ export const Engineer = () => {
   }, []);
 
   const onValueChange1 = (v: ChangeEvent<HTMLInputElement>) => {
-    if (v.target.value.length <= 0) {
+    if (v.target.value.length == 0) {
       setValue('0');
       return;
     }
@@ -24,20 +25,15 @@ export const Engineer = () => {
     }
   };
 
-  const onValueChange2 = (v: string) => {
-    if (v[0] == '0') {
-      setValue(v.slice(1));
-      return;
-    }
-    setValue(v);
-  };
+  const onValueChange2 = (v: string) => setValue(v);
 
   useEffect(() => {
-    if (value.length <= 0) {
-      setValue('0');
-    }
     try {
-      setResult(chain(evaluate(value)).round(15).toString());
+      setResult(
+        formatNumber(
+          format(chain(evaluate(value)).round(15).done(), { upperExp: 9 }),
+        ),
+      );
     } catch (error) {
       setResult(error as object);
     }
@@ -50,7 +46,7 @@ export const Engineer = () => {
           <input
             ref={inputRef}
             type="text"
-            value={value}
+            value={formatNumber(value)}
             onChange={onValueChange1}
             className="w-full bg-neutral-950 text-right caret-blue-700 focus:outline-none"
           />
