@@ -7,7 +7,10 @@ export const Engineer = () => {
   const [value, setValue] = useState<string>('0');
   const [result, setResult] = useState<string | object>('0');
 
-  useEffect(() => inputRef.current?.focus(), []);
+  useEffect(() => {
+    inputRef.current?.focus();
+    document.addEventListener('click', () => inputRef.current?.focus());
+  }, []);
 
   const onValueChange1 = (v: ChangeEvent<HTMLInputElement>) => {
     if (v.target.value.length <= 0) {
