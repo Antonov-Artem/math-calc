@@ -6,5 +6,5 @@ import 'katex/dist/katex.min.css';
 import './index.css';
 
 createRoot(document.querySelector('#root')!).render(
-  <RouterProvider router={router} />
+  <RouterProvider router={router} />,
 );

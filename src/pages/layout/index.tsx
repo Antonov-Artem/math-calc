@@ -68,7 +68,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
                     className="rounded-lg bg-neutral-900 px-2 py-2"
                   >
                     <Select.ItemGroup className="flex flex-col gap-2">
-                      {routes.map((r) => (
+                      {routes.map(r => (
                         <Select.Item
                           key={r}
                           item={r}

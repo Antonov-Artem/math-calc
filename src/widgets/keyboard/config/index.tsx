@@ -1,9 +1,9 @@
-import { Tab } from '../types';
+import { Key, Tab } from '../types';
 
 export const tabs: Tab[] = [
   {
     name: 'arithmetic',
-    label: 'Арифм.',
+    label: 'Стандартні',
     keys: [
       [
         {
@@ -22,12 +22,12 @@ export const tabs: Tab[] = [
           btn: '9',
         },
         {
-          id: 'clear',
-          btn: <span>C</span>,
+          btn: '',
         },
         {
-          id: 'remove',
-          btn: <span className="material-symbols-outlined">backspace</span>,
+          id: 'frac',
+          value: 'fraction(a, b)',
+          btn: '/',
         },
       ],
       [
@@ -100,7 +100,11 @@ export const tabs: Tab[] = [
           value: ')',
           btn: ')',
         },
-        { id: 'dot', value: '.', btn: '.' },
+        {
+          id: 'dot',
+          value: '.',
+          btn: '.',
+        },
         {
           id: 'equal',
           btn: '=',
@@ -110,7 +114,7 @@ export const tabs: Tab[] = [
   },
   {
     name: 'trig',
-    label: 'Триг. / Гіпербол.',
+    label: 'Тригонометрія',
     keys: [
       [
         {
@@ -150,10 +154,13 @@ export const tabs: Tab[] = [
         },
       ],
       [
+        // {
+        //   id: 'pi2',
+        //   value: (Math.PI / 2).toString(),
+        //   btn: '\\frac{\\pi}{2}',
+        // },
         {
-          id: 'pi2',
-          value: (Math.PI / 2).toString(),
-          btn: '\\frac{\\pi}{2}',
+          btn: '',
         },
         {
           id: 'arcsin',
@@ -264,7 +271,7 @@ export const tabs: Tab[] = [
   },
   {
     name: 'log',
-    label: 'Ступ. / Лог.',
+    label: 'Функції',
     keys: [
       [
         {
@@ -294,11 +301,31 @@ export const tabs: Tab[] = [
         },
       ],
       [
-        { id: 'root_n', value: 'nthRoot(', btn: '\\sqrt[n]{x}' },
-        { id: 'sqrt', value: 'sqrt(', btn: '\\sqrt{x}' },
-        { id: 'cbrt', value: 'cbrt(', btn: '\\sqrt[3]{x}' },
-        { value: '' },
-        { value: '' },
+        {
+          id: 'root_n',
+          value: 'nthRoot(x, n)',
+          btn: '\\sqrt[n]{x}',
+        },
+        {
+          id: 'sqrt',
+          value: 'sqrt(',
+          btn: '\\sqrt{x}',
+        },
+        {
+          id: 'cbrt',
+          value: 'cbrt(',
+          btn: '\\sqrt[3]{x}',
+        },
+        {
+          id: 'modulo',
+          value: 'abs(',
+          btn: '\\text{abs}',
+        },
+        {
+          id: 'sgn',
+          value: 'sign(',
+          btn: '\\text{sgn}',
+        },
       ],
       [
         {
@@ -330,26 +357,28 @@ export const tabs: Tab[] = [
       [],
     ],
   },
+];
+
+export const shared: Key[] = [
   {
-    name: 'func',
-    label: 'Функції',
-    keys: [
-      [
-        {
-          id: 'modulo',
-          value: 'abs(',
-          btn: '\\text{abs}',
-        },
-        {
-          id: 'sgn',
-          value: 'sign(',
-          btn: '\\text{sgn}',
-        },
-      ],
-      [],
-      [],
-      [],
-    ],
+    id: 'move_left',
+    btn: (
+      <span className="material-symbols-outlined text-xl">chevron_left</span>
+    ),
+  },
+  {
+    id: 'move_right',
+    btn: (
+      <span className="material-symbols-outlined text-xl">chevron_right</span>
+    ),
+  },
+  {
+    id: 'delete',
+    btn: <span className="material-symbols-outlined text-xl">backspace</span>,
+  },
+  {
+    id: 'clear',
+    btn: <span className="material-symbols-outlined text-xl">close</span>,
   },
 ];
 

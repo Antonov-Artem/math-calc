@@ -1,12 +1,12 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { evaluate, chain, format } from 'mathjs';
 import { Keyboard } from 'widgets/keyboard';
-import { formatNumber } from 'shared/lib';
 
 export const Engineer = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<string>('0');
-  const [result, setResult] = useState<string | object>('0');
+  const [result, setResult] = useState<string | object>(value);
+  const [caretPos, setCaretPos] = useState(1);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -16,23 +16,33 @@ export const Engineer = () => {
   const onValueChange1 = (v: ChangeEvent<HTMLInputElement>) => {
     if (v.target.value.length == 0) {
       setValue('0');
+      setCaretPos(1);
       return;
     }
     if (v.target.value[0] == '0') {
       setValue(v.target.value.slice(1));
+      setCaretPos(1);
     } else {
       setValue(v.target.value);
     }
   };
 
-  const onValueChange2 = (v: string) => setValue(v);
+  const onValueChange2 = (v: string) => {
+    setValue(v);
+  };
+
+  const onCaretPosChange = (newCaretPos: number) => {
+    setCaretPos(newCaretPos);
+  };
+
+  useEffect(() => {
+    inputRef.current?.setSelectionRange(caretPos, caretPos);
+  }, [caretPos]);
 
   useEffect(() => {
     try {
       setResult(
-        formatNumber(
-          format(chain(evaluate(value)).round(15).done(), { upperExp: 9 }),
-        ),
+        format(chain(evaluate(value)).round(15).done(), { upperExp: 9 }),
       );
     } catch (error) {
       setResult(error as object);
@@ -46,16 +56,22 @@ export const Engineer = () => {
           <input
             ref={inputRef}
             type="text"
-            value={formatNumber(value)}
+            value={value}
             onChange={onValueChange1}
-            className="w-full bg-neutral-950 text-right caret-blue-700 focus:outline-none"
+            onClick={() => setCaretPos(inputRef.current?.selectionStart || 0)}
+            className="w-full bg-neutral-950 text-right caret-blue-700 outline-none"
           />
         </div>
         <div className="flex-1 text-3xl text-neutral-400">
           {typeof result == 'string' ? result : 'Введіть коректний вираз'}
         </div>
       </div>
-      <Keyboard value={value} onChange={onValueChange2} />
+      <Keyboard
+        caretPos={caretPos}
+        value={value}
+        onChange={onValueChange2}
+        onCaretPosChange={onCaretPosChange}
+      />
     </div>
   );
 };
