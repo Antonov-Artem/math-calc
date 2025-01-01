@@ -1,9 +1,10 @@
 import { Key, Tab } from '../types';
+import { isMobile } from 'react-device-detect';
 
 export const tabs: Tab[] = [
   {
     name: 'arithmetic',
-    label: 'Стандартні',
+    label: isMobile ? '+' : 'Стандартні',
     keys: [
       [
         {
@@ -114,7 +115,7 @@ export const tabs: Tab[] = [
   },
   {
     name: 'trig',
-    label: 'Тригонометрія',
+    label: isMobile ? 'sin' : 'Тригонометрія',
     keys: [
       [
         {
@@ -271,7 +272,7 @@ export const tabs: Tab[] = [
   },
   {
     name: 'log',
-    label: 'Функції',
+    label: isMobile ? 'f(x)' : 'Функції',
     keys: [
       [
         {
@@ -381,5 +382,3 @@ export const shared: Key[] = [
     btn: <span className="material-symbols-outlined text-xl">close</span>,
   },
 ];
-
-export const tabsIndexes = new Array(tabs.length).fill(1).map((_, i) => i);
