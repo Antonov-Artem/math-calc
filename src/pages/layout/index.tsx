@@ -29,7 +29,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
 
   return (
     <>
-      <header className="flex h-16 items-center gap-8 border-b-2 border-black px-6">
+      <header className="flex h-16 items-center gap-8 border-b-2 border-black bg-neutral-950 px-6">
         <Link to="/engineer">
           <div className="flex select-none items-center gap-3">
             <img src="/logo.svg" />

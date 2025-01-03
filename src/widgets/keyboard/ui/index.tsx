@@ -77,15 +77,15 @@ export const Keyboard = ({
     <Tabs.Root
       defaultValue={tab}
       onValueChange={d => setTab(d.value)}
-      className="grid grid-rows-[auto_1fr] gap-2"
+      className="grid h-full grid-rows-[auto_1fr] gap-2"
     >
-      <Tabs.List className="relative flex h-12 w-full gap-2 rounded-md">
+      <Tabs.List className="flex h-12 w-full gap-2 rounded-md">
         {tabs.map(t => (
           <Tabs.Trigger
             key={t.name}
             value={t.name}
             className={clsx(
-              'z-[1] flex-1 select-none rounded-md text-sm leading-none transition-colors',
+              'flex-1 select-none rounded-md text-sm leading-none transition-colors',
               t.name == tab
                 ? 'bg-blue-700'
                 : 'bg-neutral-900 hover:bg-neutral-800',
