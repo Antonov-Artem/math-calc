@@ -1,27 +1,9 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { AnimatePresence, motion } from 'motion/react';
 import { clsx } from 'clsx/lite';
 import colors from 'tailwindcss/colors';
 import { Keyboard } from 'widgets/keyboard';
-
-type StateProps = {
-  value: boolean;
-  setValue: Dispatch<SetStateAction<boolean>>;
-};
-
-const DrawerToggleButton = ({ value, setValue }: StateProps) => (
-  <button
-    className={clsx(
-      'flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800',
-    )}
-    onClick={() => setValue(!value)}
-  >
-    <span className="material-symbols-outlined text-xl">
-      keyboard_double_arrow_{value ? 'left' : 'right'}
-    </span>
-  </button>
-);
 
 export const Graphic = () => {
   const [values, setValues] = useState<
@@ -55,8 +37,6 @@ export const Graphic = () => {
   const onDeleteValueClick = (id: string) =>
     setValues(values.filter(v => v.id != id));
 
-  const onClearValueClick = () => setValues([]);
-
   useEffect(() => {
     if (values.length == 0) {
       setValues([
@@ -74,24 +54,16 @@ export const Graphic = () => {
 
   return (
     <>
-      <AnimatePresence>
-        {!isDrawerOpen && (
-          <motion.div
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: { duration: 0.25, delay: 0.5 },
-            }}
-            className="absolute left-0 top-16 z-[1] m-2"
-          >
-            <DrawerToggleButton
-              value={isDrawerOpen}
-              setValue={setIsDrawerOpen}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.button
+        animate={{ x: isDrawerOpen ? '25.5rem' : '0rem' }}
+        transition={{ duration: 0.25 }}
+        className="absolute left-0 top-16 z-[1] m-2 flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800"
+        onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+      >
+        <span className="material-symbols-outlined text-xl">
+          keyboard_double_arrow_{isDrawerOpen ? 'left' : 'right'}
+        </span>
+      </motion.button>
       <AnimatePresence>
         {isKeyboardVisible && (
           <motion.div
@@ -114,32 +86,12 @@ export const Graphic = () => {
       </AnimatePresence>
       <div className="flex h-[calc(100vh-64px)] bg-white">
         <motion.div
-          animate={{ x: isDrawerOpen ? 0 : -550 }}
+          animate={{
+            x: isDrawerOpen ? 0 : -550,
+          }}
           transition={{ duration: 0.25 }}
           className="relative flex h-[calc(100vh-64px)] w-[550px] flex-col items-center gap-2 overflow-auto bg-neutral-950 p-2"
         >
-          <div className="flex h-12 w-full justify-between rounded-lg">
-            <div className="flex gap-2">
-              <button
-                className="flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-neutral-800"
-                onClick={onAddValueClick}
-              >
-                <span className="material-symbols-outlined text-xl">add</span>
-              </button>
-              <button
-                className="flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-neutral-800"
-                onClick={onClearValueClick}
-              >
-                <span className="material-symbols-outlined text-xl">
-                  delete
-                </span>
-              </button>
-            </div>
-            <DrawerToggleButton
-              value={isDrawerOpen}
-              setValue={setIsDrawerOpen}
-            />
-          </div>
           <AnimatePresence>
             {values.map((v, i) => (
               <motion.div
@@ -183,7 +135,7 @@ export const Graphic = () => {
           <motion.button
             animate={{ y: isKeyboardVisible ? '-20rem' : '0' }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-0 left-0 m-2 flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-700 pl-3 pr-2 transition-colors hover:bg-blue-800"
+            className="fixed bottom-0 left-0 m-3 flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-700 pl-3 pr-2 transition-colors hover:bg-blue-800"
             onClick={() => setIsKeyboardVisible(!isKeyboardVisible)}
           >
             <span className="material-symbols-outlined text-xl">keyboard</span>
