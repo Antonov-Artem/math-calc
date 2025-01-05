@@ -20,7 +20,7 @@ export const Calculus = () => {
   };
 
   return (
-    <div className="mx-auto grid h-[calc(100vh-64px)] w-full max-w-4xl grid-rows-2 p-2">
+    <div className="mx-auto grid h-[calc(100svh-64px)] w-full max-w-4xl grid-rows-2 p-2">
       <Tabs.Root
         defaultValue={tab}
         value={tab}

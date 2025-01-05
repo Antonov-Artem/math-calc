@@ -60,7 +60,7 @@ export const Graphic = () => {
   console.log(innerHeight / 2 - 40);
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-white">
+    <div className="h-[calc(100svh-64px)] bg-white">
       <motion.button
         initial={{
           x: isMobile ? 0 : isDrawerOpen ? '25.5rem' : 0,
@@ -133,7 +133,7 @@ export const Graphic = () => {
             transition={{ duration: 0.25 }}
             className={clsx(
               'absolute flex flex-col items-center gap-2 overflow-auto bg-neutral-950 p-2',
-              isMobile ? 'h-[50vh] w-full' : 'h-[calc(100vh-64px)] w-[400px]',
+              isMobile ? 'h-[50svh] w-full' : 'h-[calc(100svh-64px)] w-[400px]',
             )}
           >
             <AnimatePresence>

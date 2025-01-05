@@ -51,7 +51,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
             animate={{ opacity: 0.5 }}
             transition={{ duration: 0.25 }}
             onClick={() => setOpen(!open)}
-            className="absolute left-0 top-16 z-[2] h-[calc(100vh-64px)] w-screen bg-black"
+            className="absolute left-0 top-16 z-[2] h-[calc(100svh-64px)] w-screen bg-black"
           />
         )}
       </AnimatePresence>

@@ -50,7 +50,7 @@ export const Engineer = () => {
   }, [value]);
 
   return (
-    <div className="mx-auto grid h-[calc(100vh-64px)] max-w-4xl grid-rows-2 p-2">
+    <div className="mx-auto grid h-[calc(100svh-64px)] max-w-4xl grid-rows-2 p-2">
       <div className="flex flex-col items-end gap-8 pr-8">
         <div className="flex w-full flex-1 flex-col justify-end text-5xl">
           <input
