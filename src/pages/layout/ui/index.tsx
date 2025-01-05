@@ -69,7 +69,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
         </Link>
         <Select.Root
           collection={createListCollection({ items: routes })}
-          defaultValue={[value]}
+          value={[value]}
           onValueChange={onValueChanged}
           onOpenChange={onOpenChange}
         >
