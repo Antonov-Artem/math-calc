@@ -4,6 +4,7 @@ import { clsx } from 'clsx/lite';
 import { Keyboard } from 'widgets/keyboard';
 import { ExpandingInput } from 'shared/ui';
 import { tabs } from '../config';
+import { isMobile } from 'react-device-detect';
 
 export const Calculus = () => {
   const [value, setValue] = useState('1/x');
@@ -24,14 +25,16 @@ export const Calculus = () => {
         defaultValue={tab}
         value={tab}
         onValueChange={d => setTab(d.value)}
-        className="flex flex-col gap-14"
+        className={clsx('flex flex-col', isMobile ? 'gap-10' : 'gap-14')}
       >
-        <Tabs.List className="flex gap-2">
+        <Tabs.List
+          className={clsx(isMobile ? `grid grid-cols-3` : 'flex gap-2')}
+        >
           {tabs.map(t => (
             <Tabs.Trigger
               value={t.value}
               className={clsx(
-                'h-10 rounded-lg px-4 text-sm transition-colors',
+                'h-9 rounded-lg px-4 text-sm transition-colors',
                 t.value == tab
                   ? 'bg-blue-700 text-white'
                   : 'bg-neutral-950 text-neutral-400',

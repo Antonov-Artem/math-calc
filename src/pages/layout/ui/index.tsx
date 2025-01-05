@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router';
+import { useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router';
 import { createListCollection, Portal, Select } from '@ark-ui/react';
 import { AnimatePresence, motion } from 'motion/react';
-
-const routesLabels: Record<string, string> = {
-  engineer: 'Інженерний',
-  graphic: 'Графічний',
-  calculus: 'Аналіз',
-};
+import { routesLabels } from '../config';
+import { clsx } from 'clsx/lite';
+import { isMobile } from 'react-device-detect';
 
 export const Layout = ({ routes }: { routes: string[] }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const [value, setValue] = useState(pathname.substring(1));
+  const [value, setValue] = useState('engineer');
   const [open, setOpen] = useState(false);
 
   const onValueChanged = (d: Select.ValueChangeDetails<string>) => {
@@ -25,11 +20,25 @@ export const Layout = ({ routes }: { routes: string[] }) => {
     setOpen(d.open);
   };
 
-  useEffect(() => setValue(pathname.substring(1)), [pathname]);
-
   return (
     <>
-      <header className="flex h-16 items-center gap-8 bg-neutral-950 px-6">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            exit={{ opacity: 0 }}
+            initial={{ opacity: open ? 0.5 : 0 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ duration: 0.25 }}
+            className="absolute left-0 top-16 z-[2] h-[calc(100vh-64px)] w-screen bg-black"
+          />
+        )}
+      </AnimatePresence>
+      <header
+        className={clsx(
+          'flex h-16 items-center bg-neutral-950 px-6',
+          isMobile ? 'justify-between' : 'gap-8',
+        )}
+      >
         <Link to="/engineer">
           <div className="flex select-none items-center gap-3">
             <img src="/logo.svg" />
@@ -65,7 +74,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="rounded-lg bg-neutral-900 px-2 py-2"
+                    className="absolute z-[3] rounded-lg bg-neutral-900 px-2 py-2"
                   >
                     <Select.ItemGroup className="flex flex-col gap-2">
                       {routes.map(r => (
