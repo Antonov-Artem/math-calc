@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { AnimatePresence, motion } from 'motion/react';
 import { clsx } from 'clsx/lite';
 import colors from 'tailwindcss/colors';
 import { Keyboard } from 'widgets/keyboard';
+import { isMobile } from 'react-device-detect';
+import { useOnClickOutside } from 'usehooks-ts';
 
 export const Graphic = () => {
   const [values, setValues] = useState<
@@ -33,6 +35,7 @@ export const Graphic = () => {
         ],
       },
     ]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onDeleteValueClick = (id: string) =>
     setValues(values.filter(v => v.id != id));
@@ -52,19 +55,44 @@ export const Graphic = () => {
     }
   }, [values]);
 
+  useOnClickOutside(inputRef, () => setIsKeyboardVisible(false));
+
+  console.log(innerHeight / 2 - 40);
+
   return (
-    <>
+    <div className="h-[calc(100vh-64px)] bg-white">
       <motion.button
-        initial={{ x: isDrawerOpen ? '25.5rem' : '0rem' }}
-        animate={{ x: isDrawerOpen ? '25.5rem' : '0rem' }}
+        initial={{
+          x: isMobile ? 0 : isDrawerOpen ? '25.5rem' : 0,
+          y: isMobile
+            ? isDrawerOpen
+              ? innerHeight / 2 - 111
+              : innerHeight - 111
+            : 0,
+        }}
+        animate={{
+          x: isMobile ? 0 : isDrawerOpen ? '25.5rem' : 0,
+          y: isMobile
+            ? isDrawerOpen
+              ? innerHeight / 2 - 111
+              : innerHeight - 111
+            : 0,
+        }}
         transition={{ duration: 0.25 }}
-        className="absolute left-0 top-16 z-[1] m-1 flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800"
+        className={clsx(
+          'absolute z-[1] m-1 flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800',
+          isMobile ? 'right-0' : 'left-0',
+        )}
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
       >
         <span className="material-symbols-outlined text-xl">
-          {isDrawerOpen
-            ? 'keyboard_double_arrow_left'
-            : 'keyboard_double_arrow_right'}
+          {isMobile
+            ? isDrawerOpen
+              ? 'keyboard_double_arrow_down'
+              : 'keyboard_double_arrow_up'
+            : isDrawerOpen
+              ? 'keyboard_double_arrow_left'
+              : 'keyboard_double_arrow_right'}
         </span>
       </motion.button>
       <AnimatePresence>
@@ -76,7 +104,7 @@ export const Graphic = () => {
             transition={{ duration: 0.25 }}
             className="absolute bottom-0 left-0 z-[2] flex h-80 w-screen justify-center border-t border-neutral-600 bg-neutral-950 p-2"
           >
-            <div className="w-1/2">
+            <div className={isMobile ? 'w-full' : 'w-1/2'}>
               <Keyboard
                 value={''}
                 caretPos={1}
@@ -87,72 +115,93 @@ export const Graphic = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="flex h-[calc(100vh-64px)] bg-white">
-        <motion.div
-          animate={{
-            x: isDrawerOpen ? 0 : -550,
-          }}
-          transition={{ duration: 0.25 }}
-          className="relative flex h-[calc(100vh-64px)] w-[550px] flex-col items-center gap-2 overflow-auto bg-neutral-950 p-2"
-        >
-          <AnimatePresence>
-            {values.map((v, i) => (
-              <motion.div
-                key={v.id}
-                exit={{ x: -15, opacity: 0 }}
-                initial={{ x: -15, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.25 }}
-                className="grid h-12 w-full grid-cols-[2.5rem_auto_3rem] rounded-lg bg-neutral-900"
-              >
-                <div
-                  className="flex h-12 w-10 items-center justify-center rounded-lg text-sm"
-                  style={{
-                    background: v.color,
-                  }}
-                >
-                  {i + 1}
-                </div>
-                <input className="bg-transparent px-3 outline-none" />
-                <button
-                  className="flex h-12 w-12 items-center justify-center rounded-lg transition-colors hover:bg-neutral-800"
-                  onClick={() => onDeleteValueClick(v.id)}
-                >
-                  <span className="material-symbols-outlined text-xl text-neutral-300">
-                    close
-                  </span>
-                </button>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          <button
-            className={clsx(
-              'flex h-9 w-fit items-center gap-2 rounded-lg bg-blue-700 pl-3 pr-4 text-sm transition-colors hover:bg-blue-800',
-              values.length ? 'my-4' : 'my-2',
-            )}
-            onClick={onAddValueClick}
-          >
-            <span className="material-symbols-outlined text-xl">add</span>
-            Додати вираз
-          </button>
-          <motion.button
-            animate={{ y: isKeyboardVisible ? '-20rem' : '0' }}
+      <AnimatePresence>
+        {isDrawerOpen && (
+          <motion.div
+            exit={{
+              x: isMobile ? 0 : isDrawerOpen ? -550 : 0,
+              y: isMobile ? innerHeight - 64 : 0,
+            }}
+            initial={{
+              x: isMobile ? 0 : isDrawerOpen ? -550 : 0,
+              y: isMobile ? innerHeight - 64 : 0,
+            }}
+            animate={{
+              x: isMobile ? 0 : isDrawerOpen ? 0 : -550,
+              y: isMobile ? innerHeight / 2 - 64 : 0,
+            }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-0 left-0 m-3 flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-700 pl-3 pr-2 transition-colors hover:bg-blue-800"
-            onClick={() => setIsKeyboardVisible(!isKeyboardVisible)}
+            className={clsx(
+              'absolute flex flex-col items-center gap-2 overflow-auto bg-neutral-950 p-2',
+              isMobile ? 'h-[50vh] w-full' : 'h-[calc(100vh-64px)] w-[400px]',
+            )}
           >
-            <span className="material-symbols-outlined text-xl">keyboard</span>
-            <motion.span
-              animate={{ rotate: isKeyboardVisible ? 180 : 0 }}
-              transition={{ duration: 0.25 }}
-              className="material-symbols-outlined text-xl"
+            <AnimatePresence>
+              {values.map((v, i) => (
+                <motion.div
+                  key={v.id}
+                  exit={{ x: -15, opacity: 0 }}
+                  initial={{ x: -15, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.25 }}
+                  className="grid h-12 w-full grid-cols-[2.5rem_auto_3rem] rounded-lg bg-neutral-900"
+                >
+                  <div
+                    className="flex h-12 w-10 items-center justify-center rounded-lg text-sm"
+                    style={{
+                      background: v.color,
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+                  <input
+                    ref={inputRef}
+                    onClick={() => setIsKeyboardVisible(true)}
+                    className="bg-transparent px-3 outline-none"
+                  />
+                  <button
+                    className="flex h-12 w-12 items-center justify-center rounded-lg transition-colors hover:bg-neutral-800"
+                    onClick={() => onDeleteValueClick(v.id)}
+                  >
+                    <span className="material-symbols-outlined text-xl text-neutral-300">
+                      close
+                    </span>
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            <button
+              className={clsx(
+                'flex h-9 w-fit items-center gap-2 rounded-lg bg-blue-700 pl-3 pr-4 text-sm transition-colors hover:bg-blue-800',
+                values.length ? 'my-4' : 'my-2',
+              )}
+              onClick={onAddValueClick}
             >
-              keyboard_arrow_up
-            </motion.span>
-          </motion.button>
-        </motion.div>
-        <div className="w-full bg-white" />
-      </div>
-    </>
+              <span className="material-symbols-outlined text-xl">add</span>
+              Додати вираз
+            </button>
+            {!isMobile && (
+              <motion.button
+                animate={{ y: isKeyboardVisible ? '-20rem' : '0' }}
+                transition={{ duration: 0.25 }}
+                className="fixed bottom-0 left-0 m-3 flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-700 pl-3 pr-2 transition-colors hover:bg-blue-800"
+                onClick={() => setIsKeyboardVisible(!isKeyboardVisible)}
+              >
+                <span className="material-symbols-outlined text-xl">
+                  keyboard
+                </span>
+                <motion.span
+                  animate={{ rotate: isKeyboardVisible ? 180 : 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="material-symbols-outlined text-xl"
+                >
+                  keyboard_arrow_up
+                </motion.span>
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };

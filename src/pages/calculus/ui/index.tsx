@@ -44,7 +44,7 @@ export const Calculus = () => {
             </Tabs.Trigger>
           ))}
         </Tabs.List>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 pl-4">
           <ExpandingInput
             value={value}
             onValueChange={onValueChange}
@@ -76,7 +76,7 @@ export const Calculus = () => {
         </div>
         {tabs.map(t => (
           <Tabs.Content value={t.value}>
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-10 pl-4">
               <div className="h-px w-full border border-neutral-700" />
               <div className="flex border-l-[6px] border-blue-700 py-2 pl-4 text-xl">
                 <span className="mr-2 text-neutral-400">=</span>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { createListCollection, Portal, Select } from '@ark-ui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { routesLabels } from '../config';
@@ -8,7 +8,8 @@ import { isMobile } from 'react-device-detect';
 
 export const Layout = ({ routes }: { routes: string[] }) => {
   const navigate = useNavigate();
-  const [value, setValue] = useState('engineer');
+  const { pathname } = useLocation();
+  const [value, setValue] = useState(pathname.substring(1));
   const [open, setOpen] = useState(false);
 
   const onValueChanged = (d: Select.ValueChangeDetails<string>) => {
@@ -19,6 +20,10 @@ export const Layout = ({ routes }: { routes: string[] }) => {
   const onOpenChange = (d: Select.OpenChangeDetails) => {
     setOpen(d.open);
   };
+
+  useEffect(() => {
+    setValue(pathname.substring(1));
+  }, [pathname]);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
