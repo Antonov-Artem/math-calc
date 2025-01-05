@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router';
 import { createListCollection, Portal, Select } from '@ark-ui/react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -20,6 +20,22 @@ export const Layout = ({ routes }: { routes: string[] }) => {
     setOpen(d.open);
   };
 
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentOffset, setContentOffset] = useState(0);
+
+  if (isMobile) {
+    useEffect(() => {
+      if (contentRef.current && triggerRef.current) {
+        setContentOffset(
+          Math.abs(
+            contentRef.current.offsetWidth - triggerRef.current.offsetWidth,
+          ),
+        );
+      }
+    }, [value]);
+  }
+
   return (
     <>
       <AnimatePresence>
@@ -29,6 +45,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
             initial={{ opacity: open ? 0.5 : 0 }}
             animate={{ opacity: 0.5 }}
             transition={{ duration: 0.25 }}
+            onClick={() => setOpen(!open)}
             className="absolute left-0 top-16 z-[2] h-[calc(100vh-64px)] w-screen bg-black"
           />
         )}
@@ -52,7 +69,10 @@ export const Layout = ({ routes }: { routes: string[] }) => {
           onOpenChange={onOpenChange}
         >
           <Select.Control>
-            <Select.Trigger className="flex h-9 select-none items-center gap-2 rounded-lg bg-neutral-900 pl-4 pr-2 text-sm">
+            <Select.Trigger
+              ref={triggerRef}
+              className="flex h-9 select-none items-center gap-2 rounded-lg bg-neutral-900 pl-4 pr-2 text-sm"
+            >
               <Select.ValueText className="leading-none">
                 {routesLabels[value]}
               </Select.ValueText>
@@ -70,11 +90,13 @@ export const Layout = ({ routes }: { routes: string[] }) => {
               <AnimatePresence>
                 {open && (
                   <motion.div
+                    ref={contentRef}
                     exit={{ opacity: 0, y: 15 }}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
                     className="absolute z-[3] rounded-lg bg-neutral-900 px-2 py-2"
+                    style={{ left: isMobile ? -contentOffset : 0 }}
                   >
                     <Select.ItemGroup className="flex flex-col gap-2">
                       {routes.map(r => (
