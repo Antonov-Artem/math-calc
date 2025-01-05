@@ -77,7 +77,7 @@ export const Keyboard = ({
     <Tabs.Root
       defaultValue={tab}
       onValueChange={d => setTab(d.value)}
-      className="grid h-full grid-rows-[auto_1fr] gap-2"
+      className="grid h-full w-full grid-rows-[auto_1fr] gap-2"
     >
       <Tabs.List className="flex h-12 w-full gap-2 rounded-md">
         {tabs.map(t => (

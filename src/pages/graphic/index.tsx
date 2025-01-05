@@ -55,13 +55,16 @@ export const Graphic = () => {
   return (
     <>
       <motion.button
+        initial={{ x: isDrawerOpen ? '25.5rem' : '0rem' }}
         animate={{ x: isDrawerOpen ? '25.5rem' : '0rem' }}
         transition={{ duration: 0.25 }}
-        className="absolute left-0 top-16 z-[1] m-2 flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800"
+        className="absolute left-0 top-16 z-[1] m-1 flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-950 transition-colors hover:bg-neutral-800"
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
       >
         <span className="material-symbols-outlined text-xl">
-          keyboard_double_arrow_{isDrawerOpen ? 'left' : 'right'}
+          {isDrawerOpen
+            ? 'keyboard_double_arrow_left'
+            : 'keyboard_double_arrow_right'}
         </span>
       </motion.button>
       <AnimatePresence>
@@ -71,9 +74,9 @@ export const Graphic = () => {
             initial={{ y: '20rem' }}
             animate={{ y: '0' }}
             transition={{ duration: 0.25 }}
-            className="absolute bottom-0 left-0 z-[2] flex h-80 w-full justify-center border-t border-neutral-600 bg-neutral-950"
+            className="absolute bottom-0 left-0 z-[2] flex h-80 w-screen justify-center border-t border-neutral-600 bg-neutral-950 p-2"
           >
-            <div className="h-full w-1/2 p-2">
+            <div className="w-1/2">
               <Keyboard
                 value={''}
                 caretPos={1}
