@@ -57,8 +57,6 @@ export const Graphic = () => {
 
   useOnClickOutside(inputRef, () => setIsKeyboardVisible(false));
 
-  console.log(innerHeight / 2 - 40);
-
   return (
     <div className="h-[calc(100svh-64px)] bg-white">
       <motion.button
