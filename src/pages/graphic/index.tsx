@@ -6,21 +6,47 @@ import colors from 'tailwindcss/colors';
 import { Keyboard } from 'widgets/keyboard';
 import { isMobile } from 'react-device-detect';
 import { useOnClickOutside } from 'usehooks-ts';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { evaluate, range } from 'mathjs';
+
+type Value = {
+  id: string;
+  value: string;
+  color: string;
+};
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
+
+const x = range(-10, 10, 0.1, true).toArray();
 
 export const Graphic = () => {
-  const [values, setValues] = useState<
-    { id: string; value: string; color: string }[]
-  >([
+  const [values, setValues] = useState<Value[]>([
     {
       id: uuid(),
-      value: '',
+      value: 'sin(x)',
       // @ts-ignore
-      color: Object.keys(colors).map(c => colors[c][600])[
-        Math.floor(Math.random() * 16) + 10
-      ],
+      color: colors.red[600],
     },
   ]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   const onAddValueClick = () =>
@@ -37,8 +63,15 @@ export const Graphic = () => {
     ]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const onDeleteValueClick = (id: string) =>
+  const onDeleteValueClick = (id: string) => {
     setValues(values.filter(v => v.id != id));
+  };
+
+  const onValueChange = (value: Value) => {
+    setValues(
+      values.map(v => (v.id == value.id ? { ...v, value: value.value } : v)),
+    );
+  };
 
   useEffect(() => {
     if (values.length == 0) {
@@ -61,7 +94,7 @@ export const Graphic = () => {
     <div className="h-[calc(100svh-64px)] bg-white">
       <motion.button
         initial={{
-          x: isMobile ? 0 : isDrawerOpen ? '25.5rem' : 0,
+          x: isMobile ? 0 : isDrawerOpen ? '25rem' : 0,
           y: isMobile
             ? isDrawerOpen
               ? innerHeight / 2 - 111
@@ -69,7 +102,7 @@ export const Graphic = () => {
             : 0,
         }}
         animate={{
-          x: isMobile ? 0 : isDrawerOpen ? '25.5rem' : 0,
+          x: isMobile ? 0 : isDrawerOpen ? '25rem' : 0,
           y: isMobile
             ? isDrawerOpen
               ? innerHeight / 2 - 111
@@ -154,6 +187,10 @@ export const Graphic = () => {
                   </div>
                   <input
                     ref={inputRef}
+                    value={values[i].value}
+                    onChange={e =>
+                      onValueChange({ ...v, value: e.target.value })
+                    }
                     onClick={() => setIsKeyboardVisible(true)}
                     className="bg-transparent px-3 outline-none"
                   />
@@ -200,6 +237,48 @@ export const Graphic = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <Line
+        options={{
+          responsive: true,
+          animation: false,
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'center',
+              min: -10,
+              max: 10,
+              ticks: {
+                stepSize: 1,
+              },
+            },
+            y: {
+              type: 'linear',
+              position: 'center',
+              min: -5,
+              max: 5,
+              ticks: {
+                stepSize: 1,
+              },
+            },
+          },
+          plugins: { legend: { display: false } },
+        }}
+        data={{
+          labels: [...x],
+          datasets: values.map(v => ({
+            data: x.map(xi => {
+              try {
+                return evaluate(v.value, { x: xi });
+              } catch (error: any) {
+                return null;
+              }
+            }),
+            borderColor: v.color,
+            borderWidth: 2.5,
+            pointRadius: 0,
+          })),
+        }}
+      />
     </div>
   );
 };

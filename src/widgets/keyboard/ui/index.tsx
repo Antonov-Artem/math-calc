@@ -79,7 +79,7 @@ export const Keyboard = ({
       onValueChange={d => setTab(d.value)}
       className="grid h-full w-full grid-rows-[auto_1fr] gap-2"
     >
-      <Tabs.List className="flex h-12 w-full gap-2 rounded-md">
+      <Tabs.List className="flex h-12 w-full gap-1 rounded-md">
         {tabs.map(t => (
           <Tabs.Trigger
             key={t.name}

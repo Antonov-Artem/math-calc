@@ -25,6 +25,7 @@ export const Calculus = () => {
   useEffect(() => {
     try {
       if (tab == 'limit') {
+        setResult('');
       } else if (tab == 'derivative') {
         setResult(diff(value, 'x').toString());
       } else if (tab == 'integral') {
@@ -34,6 +35,9 @@ export const Calculus = () => {
       }
     } catch (error: any) {
       setResult('Ввеідть коректний вираз');
+    }
+    if (value.length == 0 || (tab == 'limit' && limit.length == 0)) {
+      setResult('Введіть коректний вираз');
     }
   }, [tab, value, limit]);
 
@@ -49,6 +53,7 @@ export const Calculus = () => {
         >
           {tabs.map(t => (
             <Tabs.Trigger
+              key={t.value}
               value={t.value}
               className={clsx(
                 'h-9 rounded-lg px-4 text-sm transition-colors',
@@ -92,7 +97,7 @@ export const Calculus = () => {
           )}
         </div>
         {tabs.map(t => (
-          <Tabs.Content value={t.value}>
+          <Tabs.Content key={t.value} value={t.value}>
             <div className="flex flex-col gap-10 pl-4">
               <div className="h-px w-full border border-neutral-700" />
               <div className="flex border-l-[6px] border-blue-700 py-2 pl-4 text-xl">
