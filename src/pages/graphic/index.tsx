@@ -35,19 +35,22 @@ ChartJS.register(
   Legend,
 );
 
-const x = range(-10, 10, 0.1, true).toArray();
+const x = range(-10, 10, 0.001, true).toArray();
 
 export const Graphic = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const keyboardRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<Value[]>([
     {
       id: uuid(),
-      value: 'sin(x)',
-      // @ts-ignore
+      value: '',
       color: colors.red[600],
     },
   ]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [caretPos, setCaretPos] = useState(0);
+  const [selectedInputId, setSelectedInputId] = useState(values[0]?.id);
 
   const onAddValueClick = () =>
     setValues([
@@ -61,23 +64,36 @@ export const Graphic = () => {
         ],
       },
     ]);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const onDeleteValueClick = (id: string) => {
     setValues(values.filter(v => v.id != id));
   };
 
-  const onValueChange = (value: Value) => {
+  const onInputValueChange = (value: Value) => {
     setValues(
       values.map(v => (v.id == value.id ? { ...v, value: value.value } : v)),
     );
+    setCaretPos(inputRef.current?.selectionStart || 0);
+  };
+
+  const onKeyboardValueChange = (value: string, id?: string) => {
+    setValues(values.map(v => (v.id == id ? { ...v, value } : v)));
+  };
+
+  const onCaretPosChange = (newCaretPos: number, id?: string) => {
+    setCaretPos(newCaretPos);
   };
 
   useEffect(() => {
+    inputRef.current?.setSelectionRange(caretPos, caretPos);
+  }, [caretPos]);
+
+  useEffect(() => {
     if (values.length == 0) {
+      const id = uuid();
       setValues([
         {
-          id: uuid(),
+          id,
           value: '',
           // @ts-ignore
           color: Object.keys(colors).map(c => colors[c][600])[
@@ -85,10 +101,11 @@ export const Graphic = () => {
           ],
         },
       ]);
+      setSelectedInputId(id);
     }
   }, [values]);
 
-  useOnClickOutside(inputRef, () => setIsKeyboardVisible(false));
+  useOnClickOutside([inputRef, keyboardRef], () => setIsKeyboardVisible(false));
 
   return (
     <div className="h-[calc(100svh-64px)] bg-white">
@@ -129,6 +146,7 @@ export const Graphic = () => {
       <AnimatePresence>
         {isKeyboardVisible && (
           <motion.div
+            ref={keyboardRef}
             exit={{ y: '20rem' }}
             initial={{ y: '20rem' }}
             animate={{ y: '0' }}
@@ -137,10 +155,11 @@ export const Graphic = () => {
           >
             <div className={isMobile ? 'w-full' : 'w-1/2'}>
               <Keyboard
-                value={''}
-                caretPos={1}
-                onChange={() => {}}
-                onCaretPosChange={() => {}}
+                inputId={selectedInputId}
+                value={values.find(v => v.id == selectedInputId)?.value || ''}
+                caretPos={caretPos}
+                onChange={onKeyboardValueChange}
+                onCaretPosChange={onCaretPosChange}
               />
             </div>
           </motion.div>
@@ -189,9 +208,13 @@ export const Graphic = () => {
                     ref={inputRef}
                     value={values[i].value}
                     onChange={e =>
-                      onValueChange({ ...v, value: e.target.value })
+                      onInputValueChange({ ...v, value: e.target.value })
                     }
-                    onClick={() => setIsKeyboardVisible(true)}
+                    onClick={() => {
+                      setIsKeyboardVisible(true);
+                      setSelectedInputId(v.id);
+                      setCaretPos(v.value.length);
+                    }}
                     className="bg-transparent px-3 outline-none"
                   />
                   <button
@@ -268,14 +291,15 @@ export const Graphic = () => {
           datasets: values.map(v => ({
             data: x.map(xi => {
               try {
-                return evaluate(v.value, { x: xi });
+                return Number(evaluate(v.value, { x: xi }));
               } catch (error: any) {
                 return null;
               }
             }),
             borderColor: v.color,
-            borderWidth: 2.5,
+            borderWidth: 2,
             pointRadius: 0,
+            // tension: 0.4, significantly slows down the application!!!
           })),
         }}
       />

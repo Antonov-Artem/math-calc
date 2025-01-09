@@ -9,13 +9,15 @@ import { Key } from '../types';
 import { isMobile } from 'react-device-detect';
 
 type KeyboardProps = {
+  inputId?: string;
   value: string;
   caretPos: number;
-  onChange: (newValue: string) => void;
-  onCaretPosChange: (newCratePos: number) => void;
+  onChange: (newValue: string, inputId?: string) => void;
+  onCaretPosChange: (newCratePos: number, inputId?: string) => void;
 };
 
 export const Keyboard = ({
+  inputId,
   caretPos,
   value,
   onChange,
@@ -26,48 +28,55 @@ export const Keyboard = ({
   const onKeyClick = (key: Key) => {
     if (key.id == 'clear') {
       if (value[0] == '0') return;
-      onChange('0');
-      onCaretPosChange(1);
+      onChange('0', inputId);
+      onCaretPosChange(1, inputId);
     } else if (key.id == 'equal') {
       // if (typeof result == 'object') return;
       // setValue(result);
     } else if (key.id == 'move_left') {
       if (caretPos > 0) {
-        onCaretPosChange(caretPos - 1);
+        onCaretPosChange(caretPos - 1, inputId);
       }
     } else if (key.id == 'move_right') {
       if (caretPos < value.length) {
-        onCaretPosChange(caretPos + 1);
+        onCaretPosChange(caretPos + 1, inputId);
       }
     } else if (key.id == 'delete') {
       if (value.length - 1 == 0) {
         if (value[0] == '0') {
           return;
         } else {
-          onChange('0');
-          onCaretPosChange(1);
+          onChange('0', inputId);
+          onCaretPosChange(1, inputId);
         }
       } else {
         if (caretPos - 1 == value.length) {
-          onChange(value.slice(0, caretPos - 1) + value.slice(caretPos + 1));
-          onCaretPosChange(1);
+          onChange(
+            value.slice(0, caretPos - 1) + value.slice(caretPos + 1),
+            inputId,
+          );
+          onCaretPosChange(1, inputId);
         } else {
           if (caretPos - 1 >= 0) {
-            onCaretPosChange(caretPos - 1);
-            onChange(value.slice(0, caretPos - 1) + value.slice(caretPos));
+            onCaretPosChange(caretPos - 1, inputId);
+            onChange(
+              value.slice(0, caretPos - 1) + value.slice(caretPos),
+              inputId,
+            );
           }
         }
       }
     } else {
       if (key.value) {
         if (value.length == 1 && value[0] == '0') {
-          onChange(key.value);
-          onCaretPosChange(key.value.length);
+          onChange(key.value, inputId);
+          onCaretPosChange(key.value.length, inputId);
         } else {
           onChange(
             value.slice(0, caretPos) + key.value + value.slice(caretPos),
+            inputId,
           );
-          onCaretPosChange(caretPos + key.value.length);
+          onCaretPosChange(caretPos + key.value.length, inputId);
         }
       }
     }
@@ -75,7 +84,7 @@ export const Keyboard = ({
 
   return (
     <Tabs.Root
-      defaultValue={tab}
+      value={tab}
       onValueChange={d => setTab(d.value)}
       className="grid h-full w-full grid-rows-[auto_1fr] gap-2"
     >
