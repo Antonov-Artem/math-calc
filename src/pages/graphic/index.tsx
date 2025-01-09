@@ -80,7 +80,7 @@ export const Graphic = () => {
     setValues(values.map(v => (v.id == id ? { ...v, value } : v)));
   };
 
-  const onCaretPosChange = (newCaretPos: number, id?: string) => {
+  const onCaretPosChange = (newCaretPos: number) => {
     setCaretPos(newCaretPos);
   };
 
