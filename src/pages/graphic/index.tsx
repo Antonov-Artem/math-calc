@@ -157,8 +157,8 @@ export const Graphic = () => {
               <Keyboard
                 inputId={selectedInputId}
                 value={values.find(v => v.id == selectedInputId)?.value || ''}
-                caretPos={caretPos}
                 onChange={onKeyboardValueChange}
+                caretPos={caretPos}
                 onCaretPosChange={onCaretPosChange}
               />
             </div>

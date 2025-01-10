@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tabs } from '@ark-ui/react';
 import { clsx } from 'clsx/lite';
 import { Keyboard } from 'widgets/keyboard';
@@ -12,15 +12,47 @@ export const Calculus = () => {
   const [value, setValue] = useState('');
   const [limit, setLimit] = useState('');
   const [result, setResult] = useState('');
+  const [caretPos, setCaretPos] = useState(0);
   const [tab, setTab] = useState(tabs[0].value);
+  const [selectedInputId, setSelectedInputId] = useState('value');
+  const inputValueRef = useRef<HTMLInputElement>(null);
+  const inputLimitRef = useRef<HTMLInputElement>(null);
 
   const onLimitChange = (value: string) => {
     setLimit(value);
+    setCaretPos(inputLimitRef.current?.selectionStart || 0);
   };
 
-  const onValueChange = (value: string) => {
+  const onInputValueChange = (value: string) => {
     setValue(value);
+    setCaretPos(inputValueRef.current?.selectionStart || 0);
   };
+
+  const onInputLimitClick = () => {
+    setSelectedInputId('limit');
+    setCaretPos(inputLimitRef.current?.selectionStart || 0);
+  };
+
+  const onInputValueClick = () => {
+    setSelectedInputId('value');
+    setCaretPos(inputValueRef.current?.selectionStart || 0);
+  };
+
+  const onKeyboardValueChange = (value: string) => {
+    if (selectedInputId == 'value') {
+      setValue(value);
+    } else {
+      setLimit(value);
+    }
+  };
+
+  const onCaretPosChange = (newCaretPos: number) => {
+    setCaretPos(newCaretPos);
+  };
+
+  useEffect(() => {
+    inputValueRef.current?.setSelectionRange(caretPos, caretPos);
+  }, [caretPos]);
 
   useEffect(() => {
     try {
@@ -68,9 +100,11 @@ export const Calculus = () => {
         </Tabs.List>
         <div className="flex items-center gap-4 pl-4">
           <ExpandingInput
+            ref={inputValueRef}
             value={value}
-            onValueChange={onValueChange}
+            onValueChange={onInputValueChange}
             fontSize={30}
+            onClick={onInputValueClick}
             className={clsx(
               'bg-neutral-950 caret-blue-700 outline-none',
               value.length == 0 &&
@@ -84,9 +118,11 @@ export const Calculus = () => {
                 trending_flat
               </div>
               <ExpandingInput
+                ref={inputLimitRef}
                 value={limit}
                 onValueChange={onLimitChange}
                 fontSize={30}
+                onClick={onInputLimitClick}
                 className={clsx(
                   'bg-neutral-950 caret-blue-700 outline-none',
                   limit.length == 0 &&
@@ -109,10 +145,11 @@ export const Calculus = () => {
         ))}
       </Tabs.Root>
       <Keyboard
-        value={''}
-        caretPos={1}
-        onChange={() => {}}
-        onCaretPosChange={() => {}}
+        inputId={selectedInputId}
+        value={selectedInputId == 'value' ? value : limit}
+        onChange={onKeyboardValueChange}
+        caretPos={caretPos}
+        onCaretPosChange={onCaretPosChange}
       />
     </div>
   );
