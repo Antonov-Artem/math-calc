@@ -277,27 +277,27 @@ export const tabs: Tab[] = [
       [
         {
           id: 'x_n',
-          value: 'pow(x, n)',
+          value: 'x^n',
           btn: 'x^n',
         },
         {
           id: 'square',
-          value: 'pow(x, 2)',
+          value: 'x^2',
           btn: 'x^2',
         },
         {
           id: 'cube',
-          value: 'pow(x, 3)',
+          value: 'x^3',
           btn: 'x^3',
         },
         {
           id: 'two_n',
-          value: 'pow(2, n)',
+          value: '2^n',
           btn: '2^n',
         },
         {
           id: 'ten_n',
-          value: 'pow(10, n)',
+          value: '10^n',
           btn: '10^n',
         },
       ],
