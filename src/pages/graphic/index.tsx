@@ -17,6 +17,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import { evaluate, range } from 'mathjs';
 
 type Value = {
@@ -33,9 +34,10 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  zoomPlugin,
 );
 
-const x = range(-10, 10, 0.001, true).toArray();
+const x = range(-100, 100, 0.1, true).toArray();
 
 export const Graphic = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -263,11 +265,11 @@ export const Graphic = () => {
       <Line
         options={{
           responsive: true,
+          maintainAspectRatio: false,
           animation: false,
           scales: {
             x: {
               type: 'linear',
-              position: 'center',
               min: -10,
               max: 10,
               ticks: {
@@ -276,7 +278,6 @@ export const Graphic = () => {
             },
             y: {
               type: 'linear',
-              position: 'center',
               min: -5,
               max: 5,
               ticks: {
@@ -284,7 +285,31 @@ export const Graphic = () => {
               },
             },
           },
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            decimation: {
+              enabled: true,
+              algorithm: 'lttb',
+              threshold: 1000,
+            },
+            zoom: {
+              pan: {
+                enabled: true,
+                mode: 'xy',
+              },
+              zoom: {
+                wheel: {
+                  enabled: true,
+                },
+                pinch: {
+                  enabled: true,
+                },
+                mode: 'xy',
+              },
+            },
+          },
         }}
         data={{
           labels: [...x],
@@ -297,9 +322,9 @@ export const Graphic = () => {
               }
             }),
             borderColor: v.color,
-            borderWidth: 2,
+            borderWidth: 1.5,
             pointRadius: 0,
-            // tension: 0.4, significantly slows down the application!!!
+            tension: 0.4,
           })),
         }}
       />
