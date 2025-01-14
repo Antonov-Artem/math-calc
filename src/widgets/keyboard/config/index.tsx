@@ -23,7 +23,9 @@ export const tabs: Tab[] = [
           btn: '9',
         },
         {
-          btn: '',
+          id: 'percentage',
+          value: 'percentage(x, p)',
+          btn: <span>%</span>,
         },
         {
           id: 'frac',

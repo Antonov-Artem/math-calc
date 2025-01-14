@@ -18,7 +18,8 @@ import {
   Legend,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { evaluate, range } from 'mathjs';
+import { range } from 'mathjs';
+import { math } from 'shared/config';
 
 type Value = {
   id: string;
@@ -316,7 +317,7 @@ export const Graphic = () => {
           datasets: values.map(v => ({
             data: x.map(xi => {
               try {
-                return Number(evaluate(v.value, { x: xi }));
+                return Number(math.evaluate(v.value, { x: xi }));
               } catch (error: any) {
                 return null;
               }

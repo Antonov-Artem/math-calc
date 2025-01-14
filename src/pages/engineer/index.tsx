@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { evaluate, chain, format } from 'mathjs';
+import { chain, format } from 'mathjs';
 import { Keyboard } from 'widgets/keyboard';
+import { math } from 'shared/config';
 
 export const Engineer = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,7 +43,9 @@ export const Engineer = () => {
   useEffect(() => {
     try {
       setResult(
-        format(chain(evaluate(value)).round(15).done(), { upperExp: 9 }),
+        format(chain(math.evaluate(value)).round(15).done(), {
+          upperExp: 9,
+        }),
       );
     } catch (error) {
       setResult(error as object);

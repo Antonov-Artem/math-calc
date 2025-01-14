@@ -7,6 +7,7 @@ import { tabs } from '../config';
 import { isMobile } from 'react-device-detect';
 import { diff, integrate } from 'nerdamer';
 import { chain, evaluate, simplify } from 'mathjs';
+import { math } from 'shared/config';
 import 'nerdamer/Calculus';
 
 export const Calculus = () => {
@@ -58,7 +59,9 @@ export const Calculus = () => {
   useEffect(() => {
     try {
       if (tab == 'limit') {
-        const r = chain(simplify(value).evaluate({ x: evaluate(limit) }))
+        const r = chain(
+          math.simplify(value).evaluate({ x: math.evaluate(limit) }),
+        )
           .round(15)
           .done();
         setResult(
