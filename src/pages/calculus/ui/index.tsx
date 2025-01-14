@@ -6,6 +6,7 @@ import { ExpandingInput } from 'shared/ui';
 import { tabs } from '../config';
 import { isMobile } from 'react-device-detect';
 import { diff, integrate } from 'nerdamer';
+import { chain, evaluate, simplify } from 'mathjs';
 import 'nerdamer/Calculus';
 
 export const Calculus = () => {
@@ -57,7 +58,14 @@ export const Calculus = () => {
   useEffect(() => {
     try {
       if (tab == 'limit') {
-        setResult('');
+        const r = chain(simplify(value).evaluate({ x: evaluate(limit) }))
+          .round(15)
+          .done();
+        setResult(
+          typeof r == 'number' || typeof r == 'string'
+            ? String(r)
+            : 'Введіть коректний вираз',
+        );
       } else if (tab == 'derivative') {
         setResult(diff(value, 'x').toString());
       } else if (tab == 'integral') {
@@ -66,7 +74,7 @@ export const Calculus = () => {
         return;
       }
     } catch (error: any) {
-      setResult('Ввеідть коректний вираз');
+      setResult('Введіть коректний вираз');
     }
     if (value.length == 0 || (tab == 'limit' && limit.length == 0)) {
       setResult('Введіть коректний вираз');
