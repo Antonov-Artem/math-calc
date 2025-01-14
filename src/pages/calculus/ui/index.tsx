@@ -6,7 +6,7 @@ import { ExpandingInput } from 'shared/ui';
 import { tabs } from '../config';
 import { isMobile } from 'react-device-detect';
 import { diff, integrate } from 'nerdamer';
-import { chain, evaluate, simplify } from 'mathjs';
+import { chain } from 'mathjs';
 import { math } from 'shared/config';
 import 'nerdamer/Calculus';
 
