@@ -61,7 +61,7 @@ export const Layout = ({ routes }: { routes: string[] }) => {
           isMobile ? 'justify-between' : 'gap-8',
         )}
       >
-        <Link to="/engineer">
+        <Link to="https://main-page-calc.vercel.app">
           <div className="flex select-none items-center gap-3">
             <img src="/logo.svg" />
             <div className="text-sm font-bold">Uni Calc</div>
