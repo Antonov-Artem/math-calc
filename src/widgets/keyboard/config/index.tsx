@@ -157,13 +157,10 @@ export const tabs: Tab[] = [
         },
       ],
       [
-        // {
-        //   id: 'pi2',
-        //   value: (Math.PI / 2).toString(),
-        //   btn: '\\frac{\\pi}{2}',
-        // },
         {
-          btn: '',
+          id: 'x',
+          value: 'x',
+          btn: 'x',
         },
         {
           id: 'arcsin',
