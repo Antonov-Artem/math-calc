@@ -18,7 +18,7 @@ import {
   Legend,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { range } from 'mathjs';
+import { abs, range, round } from 'mathjs';
 import { math } from 'shared/config';
 
 type Value = {
@@ -266,23 +266,36 @@ export const Graphic = () => {
       <Line
         options={{
           responsive: true,
-          maintainAspectRatio: false,
           animation: false,
+          maintainAspectRatio: false,
+          aspectRatio: 1,
           scales: {
             x: {
               type: 'linear',
               min: -10,
               max: 10,
-              ticks: {
-                stepSize: 1,
+              grid: {
+                color(ctx) {
+                  if (round(abs(ctx.tick.value)) <= 1e-9) {
+                    return 'rgba(0, 0, 0, 1)';
+                  }
+
+                  return 'rgba(0, 0, 0, 0.1)';
+                },
               },
             },
             y: {
               type: 'linear',
               min: -5,
               max: 5,
-              ticks: {
-                stepSize: 1,
+              grid: {
+                color(ctx) {
+                  if (round(abs(ctx.tick.value)) <= 1e-9) {
+                    return 'rgba(0, 0, 0, 1)';
+                  }
+
+                  return 'rgba(0, 0, 0, 0.1)';
+                },
               },
             },
           },
