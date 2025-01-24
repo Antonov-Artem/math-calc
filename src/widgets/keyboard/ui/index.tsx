@@ -70,7 +70,10 @@ export const Keyboard = ({
       if (key.value) {
         if (value.length == 1 && value[0] == '0') {
           onChange(key.value, inputId);
-          onCaretPosChange(key.value.length, inputId);
+          onCaretPosChange(
+            key.cursorPos ? key.cursorPos : key.value.length,
+            inputId,
+          );
         } else {
           onChange(
             value.slice(0, caretPos) + key.value + value.slice(caretPos),
