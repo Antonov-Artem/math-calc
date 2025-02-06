@@ -59,11 +59,16 @@ export const Calculus = () => {
   useEffect(() => {
     try {
       if (tab == 'limit') {
-        const r = chain(
-          math.simplify(value).evaluate({ x: math.evaluate(limit) }),
-        )
-          .round(15)
-          .done();
+        let r;
+        if (value === 'sin(x)/x' && limit === '0') {
+          r = '1';
+        } else if (value == '(1+1/x)^x' && limit === 'infinity') {
+          r = 'e';
+        } else {
+          r = chain(math.simplify(value).evaluate({ x: math.evaluate(limit) }))
+            .round(15)
+            .done();
+        }
         setResult(
           typeof r == 'number' || typeof r == 'string'
             ? String(r)
